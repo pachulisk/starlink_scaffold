@@ -303,5 +303,10 @@ async def get_indexes():
     data = get_stock_data(stocks)
     lst = []
     for item in data:
-        lst.append(f"指数代码：{item['code']}，名称：{item['name']}，最近收盘价：{item['current_value']}，涨跌幅：{item['change_percent']}%")
+        # x * (1+change_percent) = currnet_value
+        current_value = item.get("current_value") 
+        change_percent = item.get("change_percent")
+        original_value = current_value / (1 + change_percent / 100) if change_percent != 0 else current_value
+        change_value = current_value - original_value
+        lst.append(f"指数代码：{item['code']}，名称：{item['name']}，最近收盘价：{item['current_value']}，涨跌幅：{change_percent}%，涨跌值：{change_value}")
     return {"data": lst}
