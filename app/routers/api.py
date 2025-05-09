@@ -323,4 +323,4 @@ async def q2b_endpoint(request: Q2BRequest):
     text = base64.b64decode(text).decode('utf-8')
     converted = stringq2b(text)
     converted_text = base64.b64encode(converted.encode("utf-8"))
-    return {"converted_text": str(converted_text)}
+    return {"b64_converted_text": str(converted_text), "converted_text": converted}
