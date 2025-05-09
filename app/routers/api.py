@@ -8,6 +8,7 @@ import luigi
 # from .chroma import chroma
 from .db_task import SaveToSupabaseTask
 from pydantic import BaseModel
+from .utils import stringq2b
 import requests
 import time
 import re
@@ -310,3 +311,11 @@ async def get_indexes():
         change_value = current_value - original_value
         lst.append(f"指数代码：{item['code']}，名称：{item['name']}，最近收盘价：{item['current_value']}，涨跌幅：{change_percent}%，涨跌值：{change_value}")
     return {"data": lst}
+
+class Q2BRequest(BaseModel):
+    text: str
+
+@api.post("/q2b", tags=["api"])
+async def q2b_endpoint(request: Q2BRequest):
+    text = request.text
+    return {"converted_text": stringq2b(text)}
