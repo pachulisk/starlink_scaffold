@@ -5,6 +5,7 @@ from .supabase import supabase
 from .zhipu import zhipuClient
 import httpx
 import luigi
+import base64
 # from .chroma import chroma
 from .db_task import SaveToSupabaseTask
 from pydantic import BaseModel
@@ -318,4 +319,8 @@ class Q2BRequest(BaseModel):
 @api.post("/q2b", tags=["api"])
 async def q2b_endpoint(request: Q2BRequest):
     text = request.text
-    return {"converted_text": stringq2b(text)}
+    # 这个text是经过base64加密的，需要解码
+    text = base64.b64decode(text).decode('utf-8')
+    converted = stringq2b(text)
+    converted_text = base64.b64encode(converted.encode("utf-8"))
+    return {"converted_text": str(converted_text)}
